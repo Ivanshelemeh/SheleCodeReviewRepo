@@ -1,40 +1,36 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Task1 {
 
     public static void main(String[] args) throws IOException {
-        File file = Paths.get(" ").toFile();
-        getCountUniqIps(file);
-        Scanner scanner = new Scanner(file);
-        scanner.useDelimiter(System.getProperty("local separator"));
-        while (scanner.hasNext()){
-            System.out.println("***"+ scanner.next());
-        }
-        scanner.close();
-    }
+        String filename = "";
+        Path path= Paths.get(filename);
+        File newFile =  path.toFile();
+        long countFile = getCountUniqIps(newFile);
+        System.out.println(countFile);
 
-    public static void getCountUniqIps(File file) throws IOException {
-        int countUniqIps = 0;
-        try (FileChannel fileChannel = FileChannel.open(file.toPath(), EnumSet.of(StandardOpenOption.READ))
-        ) {
-            MappedByteBuffer mbBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
-            if (mbBuffer != null) {
-                String bufferContent =
-                        StandardCharsets.UTF_8.decode(mbBuffer).toString();
-                countUniqIps = Math.toIntExact(Arrays.stream(bufferContent.split("\\s+"))
-                        .distinct().count());
-                mbBuffer.clear();
+        }
+
+    public static long getCountUniqIps(final File f) throws IOException {
+        long countIps = 0L;
+        //used TreeSet for sorting values
+        Set<String> stringSet =  new TreeSet<>();
+
+        try(BufferedReader br = Files.newBufferedReader(f.toPath())){
+            String buffLine;
+            while ((buffLine = br.readLine())!= null){
+                stringSet.add(buffLine);
             }
-
+            countIps =stringSet.size();
         }
+         return countIps;
+
     }
 }
